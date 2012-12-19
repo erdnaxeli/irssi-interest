@@ -9,7 +9,7 @@ $VERSION = "1.0.0";
     description => "Sort the chans' windows by interest",
     license	=> "Public Domain",
     url		=> "http://irssi.org/",
-    changed	=> "2012-09-07T14:03+0100"
+    changed	=> "2012-12-19T21:00+0100"
 );
 
 
