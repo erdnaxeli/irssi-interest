@@ -15,6 +15,28 @@ $VERSION = "1.0.0";
 
 my %interests;
 
+
+sub sort_chan {
+  my $i = 1;
+
+  foreach my $id (sort {-1 * ($interests{$a} <=> $interests{$b})} keys %interests) {
+    my ($stag, $chan) = split ('\+', $id);
+    my $server = Irssi::server_find_tag ($stag);
+
+    # on vérifie qu'on a bien trouvé un serveur
+    next unless ($server);
+
+    my $win = $server->window_find_item ($chan);
+
+    # on vérifie qu'on a bien trouvé une fenêtre
+    next unless ($win);
+
+    $i++;
+    $win->set_refnum($i);
+  }
+}
+
+
 sub load {
   foreach my $win (Irssi::windows()) {
     if ($win->{'active'}->{'type'} eq 'CHANNEL') {
@@ -24,7 +46,6 @@ sub load {
       $interests{$server .'+'. $chan} = 0 if (!$server eq '');
     }
   }
-
 
   open INTERESTS, "$ENV{HOME}/.irssi/interests";
 
@@ -41,6 +62,7 @@ sub load {
   close INTERESTS;
 }
 
+
 sub save {
   open INTERESTS, ">$ENV{HOME}/.irssi/interests";
 
@@ -51,6 +73,7 @@ sub save {
   close INTERESTS;
 }
 
+
 sub cmd_interesting {
   my ($add, $args, $cserver, $witem) = @_;
   my $cchan = $witem->{name};
@@ -59,18 +82,8 @@ sub cmd_interesting {
     my $cstag = $cserver->{tag};
     $interests{$cstag .'+'. $cchan} += $add;
 
-    my $i=1;
+    sort_chan();
 
-    foreach my $id (sort {-1 * ($interests{$a} <=> $interests{$b})} keys %interests) {
-      my ($stag, $chan) = split ('\+', $id);
-      my $server = Irssi::server_find_tag ($stag);
-      my $win = $server->window_find_item ($chan);
-
-      next unless ($win);
-
-      $i++;
-      $win->set_refnum($i);
-    }
   }
 
   save();
@@ -84,7 +97,11 @@ sub cmd_list {
 }
 
 
+# on charge la liste des chans enregistrés
 load();
+
+# on trie les chans
+sort_chan();
 
 Irssi::command_bind '++' => sub { cmd_interesting(50, @_); };
 Irssi::command_bind '--' => sub { cmd_interesting(-40, @_); };
