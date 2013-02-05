@@ -1,7 +1,7 @@
 use strict;
 use Irssi; #20020101.0250 ();
 use vars qw($VERSION %IRSSI); 
-$VERSION = "1.0.0";
+$VERSION = "1.1.0";
 %IRSSI = (
     authors     => "Alexandre Morignot",
     contact	=> "moise\@cervoi.se", 
@@ -9,7 +9,7 @@ $VERSION = "1.0.0";
     description => "Sort the chans' windows by interest",
     license	=> "Public Domain",
     url		=> "http://irssi.org/",
-    changed	=> "2012-12-19T21:00+0100"
+    changed	=> "2013-02-05T23:12+0100"
 );
 
 
